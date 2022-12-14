@@ -1,15 +1,18 @@
 let song;
 let playSong;
 
-const clientId = '377c32a0295b4864b0a124816c657718';
-const clientSecret = '71f2c3699c044fbf942a992722b38203';
+// const clientId = '377c32a0295b4864b0a124816c657718';
+// const clientSecret = '71f2c3699c044fbf942a992722b38203';
 
 const _getToken = async () => {
+    const clientId = '377c32a0295b4864b0a124816c657718';
+    const clientSecret = '71f2c3699c044fbf942a992722b38203';
+    const encodedString = btoa(clientId + ':' + clientSecret);
     const result = await fetch(`https://accounts.spotify.com/api/token`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'applicant/x-www-form-urlencoded',
-            'Authorization': 'Basic ' + btoa(`${clientId} + ':' ${clientSecret}`)
+            'Authorization': `Basic ${encodedString}`,
+            'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: 'grant_type=client_credentials'
     });
@@ -24,7 +27,11 @@ const _getToken = async () => {
  */
 
 async function clickedEvent(img_index, item_index) {
-    let track = document.getElementsByTagName('img')[img_index].attributes[2].value
+    // let track = document.getElementsByTagName('img')[img_index].attributes[2].value
+    let track = document.getElementsByTagName('img')[img_index].attributes[1].value
+    let title = track.split(' ')[0]
+    let artist = track.split(' ')[1]
+    console.log(track)
     let token = await _getToken();
 
     let headers = new Headers([
@@ -33,14 +40,14 @@ async function clickedEvent(img_index, item_index) {
         ['Authorization', `Bearer ${token}`]
     ]);
 
-    let request = new Request(`https://api.spotify.com/vl/search?q=${track}&type=trak&limit=15`, {
+    let request = new Request(`https://api.spotify.com/v1/search?type=track&q=track:${title}+artist:${artist}&limit=1`, {
         method: 'Get',
         headers: headers
     });
 
     let result = await fetch(request)
 
-    let response = await result.json;
+    let response = await result.json();
     console.log(response)
     let song = response.tracks.items[item_index].preview_url
 

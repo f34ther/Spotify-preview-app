@@ -21,7 +21,7 @@ body {
     margin-bottom: -20px;
     background-image: url('images/POUR1.png');
     background-repeat: repeat-x;
-    background-size: contain;
+    background-size: cover;
 
 }
 
